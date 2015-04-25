@@ -65,7 +65,7 @@ void setup() {
 
 	if (port_idx != -1) {
 		String portName = Serial.list()[port_idx];
-		myPort = new Serial(this, portName, 9600);
+		myPort = new Serial(this, portName, 115200);
 		myPort.clear();
 		myPort.bufferUntil('\n');
 	}
@@ -385,11 +385,11 @@ void serialEvent(Serial p) {
 
 void mousePressed() {
 	if (btn_recorder_add.isInside(mouseX, mouseY)) {
-		++record_sec;
+		record_sec += 5;
 		return;
 	}
 	if (btn_recorder_sub.isInside(mouseX, mouseY)) {
-		if (record_sec > 0) --record_sec;
+		if (record_sec > 0) record_sec -= 5;
 		return;
 	}
 	if (btn_recorder_reset.isInside(mouseX, mouseY)) {
@@ -405,10 +405,14 @@ void mousePressed() {
 		return;
 	}
 }
+
+String two_digit(int x) {
+	return x < 10 ? str(0) + str(x) : str(x);
+}
 // start to record data
 void start_record() {
 	// open new file and name it to current datetime
-	file_output = createWriter(str(year()) + str(month()) + str(day()) + "-" + str(hour()) + str(minute()) + str(second()) + ".csv");
+	file_output = createWriter(two_digit(year()) + two_digit(month()) + two_digit(day()) + "-" + two_digit(hour()) + two_digit(minute()) + two_digit(second()) + ".csv");
 	record_timer_begin = millis();
 }
 // stop to record data
